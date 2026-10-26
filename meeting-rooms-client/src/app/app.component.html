@@ -1,0 +1,123 @@
+
+<div class="container">
+  <h2>Meeting Room Bookings</h2>
+
+  <div class="filters">
+    <label>
+      Room
+      <select [(ngModel)]="selectedRoomId"
+              (change)="loadBookings()">
+        <option *ngFor="let room of rooms" [ngValue]="room.id">
+          {{ room.name }}
+        </option>
+      </select>
+    </label>
+
+    <label>
+      Date
+      <input type="date"
+             [(ngModel)]="selectedDate"
+             (change)="loadBookings()">
+    </label>
+
+    <button type="button" (click)="showForm = true">
+      Add Booking
+    </button>
+  </div>
+
+  <p *ngIf="errorMessage && !showForm" class="error" role="alert">
+    {{ errorMessage }}
+  </p>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Booked By</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr *ngFor="let booking of bookings">
+      <td>{{ booking.title }}</td>
+      <td>{{ booking.start | date:'HH:mm' }}</td>
+      <td>{{ booking.end | date:'HH:mm' }}</td>
+      <td>{{ booking.bookedBy }}</td>
+      <td>
+        <button type="button" (click)="cancelBooking(booking.id)">
+          Cancel
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="bookings.length === 0">
+    No bookings found.
+  </p>
+
+  <div class="modal-backdrop" *ngIf="showForm">
+    <div class="modal">
+      <h3>Add Booking</h3>
+
+      <div class="modal-error" role="alert">
+        {{ errorMessage }}
+      </div>
+
+      <form #bookingForm="ngForm" (ngSubmit)="saveBooking()">
+        <label>
+          Title
+          <input
+            type="text"
+            name="title"
+            [(ngModel)]="newBooking.title"
+            required>
+        </label>
+
+        <label>
+          Booked By
+          <input
+            type="text"
+            name="bookedBy"
+            [(ngModel)]="newBooking.bookedBy"
+            required>
+        </label>
+
+        <label>
+          Start Time
+          <input
+            type="time"
+            name="startTime"
+            [(ngModel)]="newBooking.startTime"
+            required>
+        </label>
+
+        <label>
+          End Time
+          <input
+            type="time"
+            name="endTime"
+            [(ngModel)]="newBooking.endTime"
+            required>
+        </label>
+
+        <div class="actions">
+          <button
+            type="submit"
+            [disabled]="bookingForm.invalid">
+            Save
+          </button>
+
+          <button
+            type="button"
+            (click)="closeForm()">
+            Close
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
